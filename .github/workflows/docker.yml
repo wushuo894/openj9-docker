@@ -23,4 +23,4 @@ jobs:
           file: ./Dockerfile
           platforms: linux/amd64,linux/arm64
           push: true
-          tags: wushuo894/openj9:latest, wushuo894/openj9:open-24-jre
+          tags: wushuo894/openj9:latest, wushuo894/openj9:open-25-jre

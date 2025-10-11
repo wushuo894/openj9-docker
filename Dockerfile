@@ -45,16 +45,17 @@ RUN ARCH=$(dpkg --print-architecture) && \
 
 FROM ubuntu:noble
 
+COPY --from=jre-builder /openjdk /opt/java/openjdk
+COPY --from=jre-builder /usr/local/bin/su-exec /usr/local/bin/su-exec
+
 ENV LANG='en_US.UTF-8' LANGUAGE='en_US:en' LC_ALL='en_US.UTF-8'
 
 RUN apt-get update \
     && DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends tzdata curl ca-certificates fontconfig locales \
     && echo "en_US.UTF-8 UTF-8" >> /etc/locale.gen \
     && locale-gen en_US.UTF-8 \
-    && rm -rf /var/lib/apt/lists/*
-
-COPY --from=jre-builder /openjdk /opt/java/openjdk
-COPY --from=jre-builder /usr/local/bin/su-exec /usr/local/bin/su-exec
+    && rm -rf /var/lib/apt/lists/* \
+    && chmod -R 777 /opt/java/openjdk
 
 ENV JAVA_TOOL_OPTIONS="-XX:+IgnoreUnrecognizedVMOptions -XX:+IdleTuningGcOnIdle"
 ENV JAVA_HOME=/opt/java/openjdk

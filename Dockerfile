@@ -1,16 +1,4 @@
-FROM ibm-semeru-runtimes:open-25-jdk-noble AS jdk-base-amd64
-FROM ibm-semeru-runtimes:open-25-jdk-noble AS jdk-base-arm64
-FROM arm32v7/eclipse-temurin:17-jre-noble AS jdk-base-armv7
-
-ARG TARGETARCH
-ARG TARGETVARIANT
-FROM jdk-base-${TARGETARCH}${TARGETVARIANT} AS jdk-selected
-
-FROM ubuntu:noble AS jre-builder
-
-ENV JAVA_HOME=/opt/java/openjdk
-COPY --from=jdk-selected $JAVA_HOME $JAVA_HOME
-ENV PATH="${JAVA_HOME}/bin:${PATH}"
+FROM ibm-semeru-runtimes:open-25-jdk-noble AS jre-builder
 
 # Install latest su-exec
 RUN  set -ex; \
@@ -29,19 +17,13 @@ RUN  set -ex; \
      apt-get purge -y --auto-remove $fetch_deps
 
 # 使用 jlink 创建一个只包含必要模块的自定义 JRE
-RUN ARCH=$(dpkg --print-architecture) && \
-        if [ "$ARCH" = "amd64" ] || [ "$ARCH" = "arm64" ]; then \
-          $JAVA_HOME/bin/jlink \
-          --add-modules java.base,java.desktop,java.logging,java.naming,java.net.http,java.sql,java.sql.rowset,java.xml,jdk.httpserver,jdk.naming.dns,jdk.unsupported \
-          --strip-debug \
-          --no-header-files \
-          --no-man-pages \
-          --compress=zip-6 \
-          --output /openjdk; \
-        elif [ "$ARCH" = "armhf" ]; then \
-          echo "Copying pre-built JRE for ${ARCH} (jlink is skipped)..." && \
-          cp -r $JAVA_HOME /openjdk; \
-        fi
+RUN $JAVA_HOME/bin/jlink \
+    --add-modules java.base,java.desktop,java.logging,java.naming,java.net.http,java.sql,java.sql.rowset,java.xml,jdk.httpserver,jdk.naming.dns,jdk.unsupported \
+    --strip-debug \
+    --no-header-files \
+    --no-man-pages \
+    --compress=zip-6 \
+    --output /openjdk
 
 FROM ubuntu:noble
 

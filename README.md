@@ -12,9 +12,9 @@
 
 ## 镜像信息
 
-- **基础镜像**: `ibm-semeru-runtimes:open-25-jdk`
+- **基础镜像**: `ibm-semeru-runtimes:open-26-jdk`
 - **运行时基础**: `ubuntu:noble`
-- **Java 版本**: OpenJDK 25
+- **Java 版本**: OpenJDK 26
 - **JVM**: OpenJ9
 
 ## 包含的 Java 模块
@@ -95,7 +95,7 @@ openj9-docker/
 ### 多阶段构建
 
 1. **第一阶段 (jre-builder)**:
-   - 基于 `ibm-semeru-runtimes:open-25-jdk`
+   - 基于 `ibm-semeru-runtimes:open-26-jdk`
    - 安装和编译 `su-exec` 工具
    - 使用 `jlink` 创建自定义 JRE
 

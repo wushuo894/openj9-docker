@@ -1,4 +1,4 @@
-FROM ibm-semeru-runtimes:open-25-jdk-noble AS jre-builder
+FROM ibm-semeru-runtimes:open-26-jdk-noble AS jre-builder
 
 # Install latest su-exec
 RUN  set -ex; \
